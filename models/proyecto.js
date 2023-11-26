@@ -26,8 +26,8 @@ const ProyectoSchema = Schema({
     },
 
     numeroIntegrantes: {
-        type: String,
-        required: [true, 'el nombre es obligatorio'],
+        type: Number,
+        required: [true, 'el nùmero de integrantes es obligatorio'],
         //maxlength:  [7, 'Debe tener máximo 3 caracteres']
     },
 
