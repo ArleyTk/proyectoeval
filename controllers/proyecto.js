@@ -6,18 +6,15 @@ const jwt = require("jsonwebtoken")
 const { generarJWT } = require('../helpers/generar_jwt')
 
 //Método GET de la API
-const proyectoGet = async(req, res = response) =>{
-    //const {nombre} = req.query //Desestructuración
-    const {_id} = req.query;
-    //Consultar todos los usuarios
+const proyectoGet = async (req, res = response) => {
+    const { integrantes } = req.query;
+
     try {
         let proyectos;
 
-        if (_id) {
-            // Si se proporciona un id, realizar una búsqueda por nombre
-            proyectos = await Proyecto.find({ _id: _id });
+        if (integrantes) {
+            proyectos = await Proyecto.find({ numeroIntegrantes: parseInt(integrantes) });
         } else {
-            // Si no se proporciona un id, consultar todos los clientes
             proyectos = await Proyecto.find();
         }
 
@@ -25,8 +22,10 @@ const proyectoGet = async(req, res = response) =>{
     } catch (error) {
         console.error('Error al buscar el proyecto:', error);
         res.status(500).json({ mensaje: 'Error interno del servidor' });
-    }  
+    }
 }
+
+
 
 //Método POST de la api
 const proyectoPost = async(req, res) => {
@@ -96,9 +95,31 @@ const proyectoDelete = async(req, res) => {
     })
 }
 
+
+const listarProyectosPorNumeroIntegrantes = async (req, res = response) => {
+    const { integrantes } = req.query;
+
+    try {
+        if (!integrantes) {
+            return res.status(400).json({ mensaje: 'Se requiere el parámetro integrantes en la consulta' });
+        }
+
+        const proyectos = await Proyecto.find({ numeroIntegrantes: parseInt(integrantes) });
+
+        res.json({ proyectos });
+    } catch (error) {
+        console.error('Error al buscar los proyectos por número de integrantes:', error);
+        res.status(500).json({ mensaje: 'Error interno del servidor' });
+    }
+}
+
+
+
+
 module.exports = {
     proyectoGet,
     proyectoPost,
     proyectoPut,
-    proyectoDelete
+    proyectoDelete,
+    listarProyectosPorNumeroIntegrantes // Agregar el nuevo método al export
 }
